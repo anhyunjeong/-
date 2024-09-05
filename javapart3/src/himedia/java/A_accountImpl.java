@@ -1,0 +1,125 @@
+package himedia.java;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+public class A_accountImpl implements A_account_I{
+    public static final int ACCOUNT_MAX_LENGTH=5;
+
+    public static String userAccount;
+    public static String userName;
+    public static int totalMoney;
+
+    private List<String> histories;
+
+    public A_accountImpl() {
+        histories = new ArrayList<>();
+    }
+
+    @Override
+    public void printCreateAccountMenu() {
+        System.out.println("<계좌생성>");
+        userAccount=createAccount();
+        System.out.println("이름을 입력");
+        Scanner sc = new Scanner(System.in);
+        userName = sc.nextLine();
+
+        System.out.println("계좌 생성 [이름]"+userName+"[계좌]"+userAccount);
+
+    }
+
+    @Override
+    public String createAccount() {
+        StringBuilder result = new StringBuilder();
+        int[] accountNums = new int[ACCOUNT_MAX_LENGTH];
+        int idx = 0;
+        while (idx < accountNums.length) {
+            int tmp = (int)(Math.random() * 10);
+
+            if ( idx == 0 && tmp == 0 ) continue;
+            if ( idx > 0 ) {
+                if ( accountExists(accountNums, tmp, idx) ) continue;
+            }
+
+            accountNums[idx++] = tmp;
+        }
+
+        for ( int accountNum : accountNums ) {
+            result.append(accountNum);
+        }
+
+        return result.toString();
+    }
+
+    @Override
+    public boolean accountExists(int[] accountNums, int tmp, int idx) {
+        for(int i=0; i<idx; i++) {
+            if (tmp == accountNums[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int printMenu() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("============ 메뉴 ============");
+        System.out.println("[계좌번호] : " + userAccount + ", [이름] " + userName);
+        System.out.println("[1]입금 [2]출금 [3]내역조회 [4]프로그램 종료");
+        System.out.println("현재금액 - " + totalMoney + "원");
+        System.out.println("원하시는 메뉴를 선택하세요.");
+
+        return sc.nextInt();
+    }
+
+    @Override
+    public void addMoney() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("입금할 금액을 입력하세요.");
+        int getMoney = sc.nextInt();
+        totalMoney += getMoney;
+
+        // 히스토리 추가
+        String historyMessage= "[입금] " + getMoney + "원 ";
+        manageHistory(historyMessage);
+
+    }
+
+    @Override
+    public void printHistory() {
+        System.out.println("======== 내역조회 ========");
+        histories.sort(Comparator.reverseOrder());
+        for (String history : histories) {
+            System.out.println(history);
+        }
+    }
+
+    @Override
+    public void manageHistory(String message) {
+        histories.add(message+getNowDateTime());
+    }
+
+    @Override
+    public void subMoney() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("출금할 금액을 입력하세요.");
+        int subMoney = sc.nextInt();
+        if (subMoney > totalMoney) {
+            System.out.println("출금할 금액이 부족합니다.");
+            return;
+        }
+        totalMoney -= subMoney;
+
+        // 히스토리 추가
+        String historyMessage= "[출금] " + subMoney + "원 ";
+        manageHistory(historyMessage);
+    }
+
+    @Override
+    public String getNowDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        return LocalDateTime.now().format(formatter);
+    }
+}
