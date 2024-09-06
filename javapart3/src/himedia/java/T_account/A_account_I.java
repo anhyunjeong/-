@@ -1,4 +1,4 @@
-package himedia.java.A_account;
+package himedia.java.T_account;
 
 public interface A_account_I {
     void printCreateAccountMenu();

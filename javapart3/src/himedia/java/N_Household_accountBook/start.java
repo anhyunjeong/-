@@ -1,4 +1,4 @@
-package himedia.java.D_Household_accountBook;
+package himedia.java.N_Household_accountBook;
 
 //가계부 1
 //기능
@@ -9,27 +9,18 @@ package himedia.java.D_Household_accountBook;
 //4. 내역삭제 - 내역들 중 특정 항목을 삭제시킬 수 있다.
 // 5. 프로그램 종료
 
+
 public class start {
     public static void main(String[] args) {
-        AccountBookImpl accountBook = new AccountBookImpl();
-        accountBook.printHouseHoldMenu();
-        while(true){
-            int menuNum=accountBook.printHouseHoldMenu();
-            switch(menuNum){
+        AccountBookImpl a = new AccountBookImpl();
+        while (true) {
+            int num=a.printMenu();
+            switch (num){
                 case 1:
-                    accountBook.createTransaction();
+                    a.addMemory();
                     break;
                 case 2:
-                    accountBook.printDateList();
-                    break;
-                case 3:
-                    accountBook.deleteAllTransactions();
-                    break;
-                case 4:
-                    accountBook.deleteTransaction();
-                    break;
-                case 5:
-                    System.out.println("이용해주셔서 감사합니다.");
+                    a.showMemory();
                     return;
             }
         }
